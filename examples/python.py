@@ -2,8 +2,7 @@
 
 import os, requests
 
-infura_key = os.environ["INFURA_KEY"]
-keys = requests.post("https://mainnet.infura.io/v3/" + infura_key, json={
+keys = requests.post("https://chain.techops.live/eth-mainnet", json={
     "jsonrpc": "2.0",
     "method": "eth_call",
     "params": [{
@@ -14,7 +13,7 @@ keys = requests.post("https://mainnet.infura.io/v3/" + infura_key, json={
 }).json()["result"][130:]
 result = {}
 for i in range(0, len(keys), 64):
-    address = "0x" + requests.post("https://mainnet.infura.io/v3/" + infura_key, json={
+    address = "0x" + requests.post("https://chain.techops.live/eth-mainnet", json={
         "jsonrpc": "2.0",
         "method": "eth_call",
         "params": [{

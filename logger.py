@@ -9,8 +9,12 @@ from eth_utils import to_checksum_address
 from github import Github, GithubException
 
 def call(chain, calldata):
-    infura_key = os.environ["INFURA_KEY"]
-    endpoint = "https://{}.infura.io/v3/{}".format(chain, infura_key)
+    if chain == "mainnet":
+        endpoint = "https://chain.techops.live/eth-mainnet"
+    elif chain == "sepolia":
+        endpoint = "https://chain.techops.live/eth-sepolia"
+    else:
+        endpoint = "https://chain.techops.live/eth-{}".format(chain)
     response = requests.post(endpoint, json={
         "jsonrpc": "2.0",
         "method": "eth_call",
