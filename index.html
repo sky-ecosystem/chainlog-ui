@@ -208,6 +208,9 @@ const hex2a = hexx => { // adapted from https://stackoverflow.com/a/3745677/1585
 const rpcCall = (params, callback) => {
   const options = {
     method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
     body: '{"jsonrpc": "2.0", "method": "eth_call", "params": [' + JSON.stringify(params) + ', "latest"], "id": 0}'
   };
   fetch(endpoint, options).then(response => {
