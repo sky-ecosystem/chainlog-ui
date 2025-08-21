@@ -29,10 +29,6 @@ env:
   PYTHONUNBUFFERED:
     type: kv
     value: "1"
-  INFURA_KEY:
-    type: parameterStore
-    name: infura-key
-    parameter_name: /eks/maker-staging/chainlog-logger/infura-key
   GITHUB_TOKEN:
     type: parameterStore
     name: github-token

@@ -18,7 +18,6 @@ jobs:
     - name: Start and test chainlog containers
       id: start-containers
       env:
-        INFURA_KEY: ${{ secrets.INFURA_KEY }}
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       working-directory: ./
       run: |

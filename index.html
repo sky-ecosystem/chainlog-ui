@@ -40,7 +40,7 @@ const chainNames = {
   "0x1": "Ethereum mainnet",
   "0x3": "Ropsten",
   "0x4": "Rinkeby",
-  "0x5": "Görli",
+  "0xaa36a7": "Sepolia",
   "0x2a": "Kovan"
 }
 
@@ -48,7 +48,7 @@ const chainPrefixes = {
   "0x1": "",
   "0x3": "ropsten.",
   "0x4": "rinkeby.",
-  "0x5": "goerli.",
+  "0xaa36a7": "sepolia.",
   "0x2a": "kovan."
 }
 
@@ -56,15 +56,15 @@ const chainApiPrefixes = {
   "0x1": "",
   "0x3": "-ropsten",
   "0x4": "-rinkeby",
-  "0x5": "-goerli",
+  "0xaa36a7": "-sepolia",
   "0x2a": "-kovan"
 }
 
-const infuraPrefixes = {
+const chainSuffixes = {
   "0x1": "mainnet",
   "0x3": "ropsten",
   "0x4": "rinkeby",
-  "0x5": "goerli",
+  "0xaa36a7": "sepolia",
   "0x2a": "kovan"
 }
 
@@ -79,13 +79,13 @@ const setUp = () => {
   }, draw);
 }
 
-let provider, chain, chainPrefix, chainApiPrefix, infuraPrefix, notice;
+let provider, chain, chainPrefix, chainApiPrefix, chainSuffix, notice;
 window.addEventListener("load", () => {
   if (typeof window.ethereum !== "undefined") {
     setTimeout(() => {
       if (!window.ethereum.isConnected()) {
-        console.log("Metamask connection timed out. Falling back to Infura mainnet");
-        setInfura();
+        console.log("Metamask connection timed out. Falling back to TechOps mainnet");
+        setDefaultRPC();
       }
     }, 1000);
     window.ethereum.on("connect", conn => {
@@ -94,8 +94,8 @@ window.addEventListener("load", () => {
       if (!chain) chain = "Unknown";
       chainPrefix = chainPrefixes[conn.chainId];
       chainApiPrefix = chainApiPrefixes[conn.chainId];
-      infuraPrefix = infuraPrefixes[conn.chainId];
-      endpoint = "https://" + infuraPrefix + ".infura.io/v3/633f64adbe364bb88127348d4fcc21ef";
+      chainSuffix = chainSuffixes[conn.chainId];
+      endpoint = chainSuffix === "mainnet" ? "https://chain.techops.live/eth-mainnet" : "https://chain.techops.live/eth-" + chainSuffix;
       notice = "change this in your Metamask plugin (you don’t need to unlock Metamask)";
       setUp();
     });
@@ -104,25 +104,25 @@ window.addEventListener("load", () => {
       if (!chain) chain = "Unknown";
       chainPrefix = chainPrefixes[chainId];
       chainApiPrefix = chainApiPrefixes[chainId];
-      infuraPrefix = infuraPrefixes[chainId];
-      endpoint = "https://" + infuraPrefix + ".infura.io/v3/633f64adbe364bb88127348d4fcc21ef";
+      chainSuffix = chainSuffixes[chainId];
+      endpoint = chainSuffix === "mainnet" ? "https://chain.techops.live/eth-mainnet" : "https://chain.techops.live/eth-" + chainSuffix;
       notice = "";
       setUp();
     });
   } else {
-    setInfura();
+    setDefaultRPC();
   }
 });
 
-const setInfura = () => {
-  provider = "Infura";
+const setDefaultRPC = () => {
+  provider = "TechOps";
   chain = "Ethereum mainnet";
   chainPrefix = "";
   chainApiPrefix = "";
-  infuraPrefix = "mainnet";
+  chainSuffix = "mainnet";
   notice = "";
   chainSelect.removeAttribute("disabled");
-  chainSelect.append(chainGoerli);
+  chainSelect.append(chainSepolia);
   setUp();
 }
 
@@ -170,14 +170,14 @@ const chainOption = document.createElement("option");
 chainOption.innerHTML = "loading…";
 chainOption.setAttribute("value", "mainnet");
 chainSelect.append(chainOption);
-const chainGoerli = document.createElement("option");
-chainGoerli.innerHTML = "Görli";
-chainGoerli.setAttribute("value", "goerli");
+const chainSepolia = document.createElement("option");
+chainSepolia.innerHTML = "Sepolia";
+chainSepolia.setAttribute("value", "sepolia");
 chainSelect.addEventListener("change", () => {
-  infuraPrefix = chainSelect.value;
-  chainPrefix = infuraPrefix === "mainnet" ? "" : "goerli.";
-  chainApiPrefix = infuraPrefix === "mainnet" ? "" : "-goerli";
-  endpoint = "https://" + infuraPrefix + ".infura.io/v3/633f64adbe364bb88127348d4fcc21ef";
+  chainSuffix = chainSelect.value;
+  chainPrefix = chainSuffix === "mainnet" ? "" : "sepolia.";
+  chainApiPrefix = chainSuffix === "mainnet" ? "" : "-sepolia";
+  endpoint = chainSuffix === "mainnet" ? "https://chain.techops.live/eth-mainnet" : "https://chain.techops.live/eth-" + chainSuffix;
   setUp();
 });
 chainValue.append(chainSelect);
@@ -191,7 +191,7 @@ const canvas = document.createElement("div");
 canvas.innerHTML = "loading…";
 document.body.append(canvas);
 
-let endpoint = 'https://mainnet.infura.io/v3/633f64adbe364bb88127348d4fcc21ef';
+let endpoint = 'https://chain.techops.live/eth-mainnet';
 const chainlog = "0xdA0Ab1e0017DEbCd72Be8599041a2aa3bA7e740F";
 
 const hex2a = hexx => { // adapted from https://stackoverflow.com/a/3745677/15857007
@@ -205,9 +205,12 @@ const hex2a = hexx => { // adapted from https://stackoverflow.com/a/3745677/1585
   return str;
 }
 
-const infuraCall = (params, callback) => {
+const rpcCall = (params, callback) => {
   const options = {
     method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
     body: '{"jsonrpc": "2.0", "method": "eth_call", "params": [' + JSON.stringify(params) + ', "latest"], "id": 0}'
   };
   fetch(endpoint, options).then(response => {
@@ -215,7 +218,7 @@ const infuraCall = (params, callback) => {
       response.json().then(content => callback(content.result))
     } else {
       response.json().then(content => {
-        console.error("Infura: " + content.error.message);
+        console.error("RPC: " + content.error.message);
         canvas.innerHTML = "error";
       });
     }
@@ -229,11 +232,11 @@ const call = (params, callback) => {
       params: [ params, "latest" ]
     }).then(response => callback(response))
     .catch(error => {
-      console.log("falling back to Infura " + infuraPrefix);
-      infuraCall(params, callback)
+      console.log("falling back to TechOps RPC " + chainSuffix);
+      rpcCall(params, callback)
     });
   } else {
-    infuraCall(params, callback);
+    rpcCall(params, callback);
   }
 }
 

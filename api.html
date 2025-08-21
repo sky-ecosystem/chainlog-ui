@@ -44,7 +44,7 @@
         Please note that the above code will only retreive the latest data.<br/><br/>
         You can also ditch web3 libraries and perform low-level JSON RPC calls. Here is an <a href="https://github.com/makerdao/chainlog-ui/blob/main/examples/python.py">example with Python</a>:
         <pre>
-  keys = requests.post("https://mainnet.infura.io/v3/" + infura_key, json={
+  keys = requests.post("https://chain.techops.live/eth-mainnet", json={
       "jsonrpc": "2.0",
       "method": "eth_call",
       "params": [{
@@ -55,7 +55,7 @@
   }).json()["result"][130:]
   result = {}
   for i in range(0, len(keys), 64):
-      address = "0x" + requests.post("https://mainnet.infura.io/v3/" + infura_key, json={
+      address = "0x" + requests.post("https://chain.techops.live/eth-mainnet", json={
           "jsonrpc": "2.0",
           "method": "eth_call",
           "params": [{
