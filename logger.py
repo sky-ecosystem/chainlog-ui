@@ -10,9 +10,9 @@ from github import Github, GithubException
 
 def call(chain, calldata):
     if chain == "mainnet":
-        endpoint = "https://chain.techops.live/eth-mainnet"
+        endpoint = "https://chain.techops.services/eth-mainnet"
     elif chain == "sepolia":
-        endpoint = "https://chain.techops.live/eth-sepolia"
+        endpoint = "https://chain.techops.services/eth-sepolia"
     else:
         endpoint = "https://chain.techops.live/eth-{}".format(chain)
     response = requests.post(endpoint, json={
