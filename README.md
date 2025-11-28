@@ -5,7 +5,7 @@ UI and API for MakerDAO’s chainlog contract
 
 * [chainlog.sky.money](https://chainlog.sky.money)
 * [chainlog.sky.money/api.html](https://chainlog.sky.money/api.html)
-* chainlog.sky.money/checksum/\<address\>
+* chainlog.sky.money/checksum/\<0x6661dF610053aCA8Dd7058869111e07B5faB018D><\>
 
 ## Staging environment
 
