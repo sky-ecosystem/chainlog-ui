@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
     <head>
-        <title>Chainlog - MakerDAO</title>
+        <title>Chainlog - Sky</title>
         <meta charset="UTF-8">
         <meta name="referrer" content="origin">
         <link rel="icon" href="data:;base64,iVBORw0KGgo=">
@@ -95,7 +95,7 @@ window.addEventListener("load", () => {
       chainPrefix = chainPrefixes[conn.chainId];
       chainApiPrefix = chainApiPrefixes[conn.chainId];
       chainSuffix = chainSuffixes[conn.chainId];
-      endpoint = chainSuffix === "mainnet" ? "https://chain.techops.live/eth-mainnet" : "https://chain.techops.live/eth-" + chainSuffix;
+      endpoint = chainSuffix === "mainnet" ? "https://chain.techops.services/eth-mainnet" : "https://chain.techops.services/eth-" + chainSuffix;
       notice = "change this in your Metamask plugin (you don’t need to unlock Metamask)";
       setUp();
     });
@@ -105,7 +105,7 @@ window.addEventListener("load", () => {
       chainPrefix = chainPrefixes[chainId];
       chainApiPrefix = chainApiPrefixes[chainId];
       chainSuffix = chainSuffixes[chainId];
-      endpoint = chainSuffix === "mainnet" ? "https://chain.techops.live/eth-mainnet" : "https://chain.techops.live/eth-" + chainSuffix;
+      endpoint = chainSuffix === "mainnet" ? "https://chain.techops.services/eth-mainnet" : "https://chain.techops.services/eth-" + chainSuffix;
       notice = "";
       setUp();
     });
@@ -127,13 +127,13 @@ const setDefaultRPC = () => {
 }
 
 const title = document.createElement("h1");
-title.innerHTML = "MakerDAO Deployment Registry";
+title.innerHTML = "Sky Deployment Registry";
 document.body.append(title);
 
 const linksDiv = document.createElement("div");
 const sourceLink = document.createElement("a");
 sourceLink.innerHTML = "source code";
-sourceLink.setAttribute("href", "https://github.com/makerdao/chainlog-ui");
+sourceLink.setAttribute("href", "https://github.com/sky-ecosystem/chainlog-ui");
 sourceLink.setAttribute("target", "_blank");
 linksDiv.append(sourceLink);
 const separator = document.createElement("span");
@@ -141,7 +141,7 @@ separator.innerHTML = " · ";
 linksDiv.append(separator);
 const apiLink = document.createElement("a");
 apiLink.innerHTML = "historical API";
-apiLink.setAttribute("href", "https://chainlog.makerdao.com/api.html");
+apiLink.setAttribute("href", "https://chainlog.skyeco.com/api.html");
 apiLink.setAttribute("target", "_blank");
 linksDiv.append(apiLink);
 document.body.append(linksDiv);
@@ -177,7 +177,7 @@ chainSelect.addEventListener("change", () => {
   chainSuffix = chainSelect.value;
   chainPrefix = chainSuffix === "mainnet" ? "" : "sepolia.";
   chainApiPrefix = chainSuffix === "mainnet" ? "" : "-sepolia";
-  endpoint = chainSuffix === "mainnet" ? "https://chain.techops.live/eth-mainnet" : "https://chain.techops.live/eth-" + chainSuffix;
+  endpoint = chainSuffix === "mainnet" ? "https://chain.techops.services/eth-mainnet" : "https://chain.techops.services/eth-" + chainSuffix;
   setUp();
 });
 chainValue.append(chainSelect);
@@ -191,7 +191,7 @@ const canvas = document.createElement("div");
 canvas.innerHTML = "loading…";
 document.body.append(canvas);
 
-let endpoint = 'https://chain.techops.live/eth-mainnet';
+let endpoint = 'https://chain.techops.services/eth-mainnet';
 const chainlog = "0xdA0Ab1e0017DEbCd72Be8599041a2aa3bA7e740F";
 
 const hex2a = hexx => { // adapted from https://stackoverflow.com/a/3745677/15857007
@@ -251,7 +251,7 @@ const getAddress = (keyHex, callback) => {
 }
 
 const getChecksum = (address, callback) => {
-  fetch(`https://chainlog.makerdao.com/checksum/${address}`).then(response => {
+  fetch(`https://chainlog.skyeco.com/checksum/${address}`).then(response => {
     if (response.ok) {
       response.text().then(checksum => {
         if (checksum.toLowerCase() === address) {
@@ -346,7 +346,7 @@ const draw = data => {
     bash.setAttribute("disabled", true);
     let text = "";
     let length = 0;
-    for (let i = 0; i < data.length; i += 64) {
+    for (let i = 0; i < data.length; i += 64) {
       const keyHex = data.substring(i, i + 64);
       getAddress(keyHex, address => {
         const key = hex2a(keyHex);
@@ -621,7 +621,7 @@ const draw = data => {
 
 const showingAll = () => {
   const trs = document.getElementsByName("tr-visible");
-  for (let i = 0; i < trs.length; i++) {
+  for (let i = 0; i < trs.length; i++) {
     const tr = trs[i];
     const view = tr.children[1];
     if (view.innerHTML.includes("<")) {

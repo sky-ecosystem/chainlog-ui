@@ -11,10 +11,8 @@ from github import Github, GithubException
 def call(chain, calldata):
     if chain == "mainnet":
         endpoint = "https://chain.techops.services/eth-mainnet"
-    elif chain == "sepolia":
-        endpoint = "https://chain.techops.services/eth-sepolia"
     else:
-        endpoint = "https://chain.techops.live/eth-{}".format(chain)
+        endpoint = "https://chain.techops.services/eth-sepolia"
     response = requests.post(endpoint, json={
         "jsonrpc": "2.0",
         "method": "eth_call",
@@ -92,7 +90,7 @@ def update(chain):
         active_file = open(active_path, "w")
         active_file.write(contents)
         active_file.close()
-        message = "feat: update active file for {} v{}".format(chain, version)
+        message = "feat: update active file for {} v{}".format(chain, version)
         push(active_path, contents, message)
         if version not in index[chain]["all"]:
             index[chain]["all"].insert(0, version)
@@ -102,7 +100,7 @@ def update(chain):
         index_contents = json.dumps(index, indent=2)
         index_file.write(index_contents)
         index_file.close()
-        message = "feat: update index file for {} v{}".format(chain, version)
+        message = "feat: update index file for {} v{}".format(chain, version)
         push(index_path, index_contents, message)
     else:
         print("{} - no changes on {}".format(datetime.now(), chain))

@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   ui:
     build:
@@ -21,7 +19,7 @@ services:
     container_name: chainlog-logger
     environment:
       GITHUB_TOKEN: $GITHUB_TOKEN
-      CHAINLOG_REPO: "makerdao/chainlog-ui"
+      CHAINLOG_REPO: "sky-ecosystem/chainlog-ui"
       PYTHONUNBUFFERED: 1
     volumes:
       - ./api:/usr/app/src/api
