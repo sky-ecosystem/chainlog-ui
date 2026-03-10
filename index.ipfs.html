@@ -38,34 +38,22 @@ END IPFS BLOCK */
 
 const chainNames = {
   "0x1": "Ethereum mainnet",
-  "0x3": "Ropsten",
-  "0x4": "Rinkeby",
-  "0xaa36a7": "Sepolia",
-  "0x2a": "Kovan"
+  "0xaa36a7": "Sepolia"
 }
 
-const chainPrefixes = {
-  "0x1": "",
-  "0x3": "ropsten.",
-  "0x4": "rinkeby.",
-  "0xaa36a7": "sepolia.",
-  "0x2a": "kovan."
+const chainDecimalIds = {
+  "0x1": "1",
+  "0xaa36a7": "11155111"
 }
 
-const chainApiPrefixes = {
-  "0x1": "",
-  "0x3": "-ropsten",
-  "0x4": "-rinkeby",
-  "0xaa36a7": "-sepolia",
-  "0x2a": "-kovan"
+const chainRpcs = {
+  "1": "https://chain.techops.services/eth-mainnet",
+  "11155111": "https://chain.techops.services/eth-sepolia"
 }
 
-const chainSuffixes = {
-  "0x1": "mainnet",
-  "0x3": "ropsten",
-  "0x4": "rinkeby",
-  "0xaa36a7": "sepolia",
-  "0x2a": "kovan"
+const chainExplorers = {
+  "1": "https://etherscan.io/address/",
+  "11155111": "https://sepolia.etherscan.io/address/"
 }
 
 const setUp = () => {
@@ -79,7 +67,7 @@ const setUp = () => {
   }, draw);
 }
 
-let provider, chain, chainPrefix, chainApiPrefix, chainSuffix, notice;
+let provider, chain, chainDecimalId, notice;
 window.addEventListener("load", () => {
   if (typeof window.ethereum !== "undefined") {
     setTimeout(() => {
@@ -92,20 +80,16 @@ window.addEventListener("load", () => {
       provider = "Metamask";
       chain = chainNames[conn.chainId];
       if (!chain) chain = "Unknown";
-      chainPrefix = chainPrefixes[conn.chainId];
-      chainApiPrefix = chainApiPrefixes[conn.chainId];
-      chainSuffix = chainSuffixes[conn.chainId];
-      endpoint = chainSuffix === "mainnet" ? "https://chain.techops.services/eth-mainnet" : "https://chain.techops.services/eth-" + chainSuffix;
+      chainDecimalId = chainDecimalIds[conn.chainId];
+      endpoint = chainRpcs[chainDecimalId];
       notice = "change this in your Metamask plugin (you don’t need to unlock Metamask)";
       setUp();
     });
     window.ethereum.on("chainChanged", chainId => {
       chain = chainNames[chainId];
       if (!chain) chain = "Unknown";
-      chainPrefix = chainPrefixes[chainId];
-      chainApiPrefix = chainApiPrefixes[chainId];
-      chainSuffix = chainSuffixes[chainId];
-      endpoint = chainSuffix === "mainnet" ? "https://chain.techops.services/eth-mainnet" : "https://chain.techops.services/eth-" + chainSuffix;
+      chainDecimalId = chainDecimalIds[chainId];
+      endpoint = chainRpcs[chainDecimalId];
       notice = "";
       setUp();
     });
@@ -117,9 +101,7 @@ window.addEventListener("load", () => {
 const setDefaultRPC = () => {
   provider = "TechOps";
   chain = "Ethereum mainnet";
-  chainPrefix = "";
-  chainApiPrefix = "";
-  chainSuffix = "mainnet";
+  chainDecimalId = "1";
   notice = "";
   chainSelect.removeAttribute("disabled");
   chainSelect.append(chainSepolia);
@@ -168,16 +150,14 @@ chainSelect.setAttribute("disabled", true);
 chainSelect.style.color = "black";
 const chainOption = document.createElement("option");
 chainOption.innerHTML = "loading…";
-chainOption.setAttribute("value", "mainnet");
+chainOption.setAttribute("value", "1");
 chainSelect.append(chainOption);
 const chainSepolia = document.createElement("option");
 chainSepolia.innerHTML = "Sepolia";
-chainSepolia.setAttribute("value", "sepolia");
+chainSepolia.setAttribute("value", "11155111");
 chainSelect.addEventListener("change", () => {
-  chainSuffix = chainSelect.value;
-  chainPrefix = chainSuffix === "mainnet" ? "" : "sepolia.";
-  chainApiPrefix = chainSuffix === "mainnet" ? "" : "-sepolia";
-  endpoint = chainSuffix === "mainnet" ? "https://chain.techops.services/eth-mainnet" : "https://chain.techops.services/eth-" + chainSuffix;
+  chainDecimalId = chainSelect.value;
+  endpoint = chainRpcs[chainDecimalId];
   setUp();
 });
 chainValue.append(chainSelect);
@@ -574,7 +554,7 @@ const draw = data => {
       escan.setAttribute("disabled", true);
       getAddress(keyHex, address => {
         tdView.innerHTML = address;
-        window.open("https://" + chainPrefix + "etherscan.io/address/" + address);
+        window.open(chainExplorers[chainDecimalId] + address);
         escan.innerHTML = "Etherscan";
         escan.removeAttribute("disabled");
         if (showingAll()) {
@@ -594,7 +574,7 @@ const draw = data => {
       abiCopy.innerHTML = "loading…";
       abiCopy.setAttribute("disabled", true);
       getAddress(keyHex, address => {
-        fetch("https://api" + chainApiPrefix + ".etherscan.io/api?apikey=1PX598KB4P6N6JI12SC9JVS1N3QM5QZIFB&module=contract&action=getabi"
+        fetch("https://api.etherscan.io/v2/api?chainid=" + chainDecimalId + "&apikey=1PX598KB4P6N6JI12SC9JVS1N3QM5QZIFB&module=contract&action=getabi"
         + "&address=" + address)
         .then(response => response.json()
         .then(data => {
