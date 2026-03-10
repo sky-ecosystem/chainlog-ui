@@ -24,7 +24,7 @@ autoscaling:
 env:
   CHAINLOG_REPO:
     type: kv
-    value: "makerdao/chainlog-ui"
+    value: "sky-ecosystem/chainlog-ui"
   PYTHONUNBUFFERED:
     type: kv
     value: "1"

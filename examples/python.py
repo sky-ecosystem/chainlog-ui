@@ -2,7 +2,7 @@
 
 import os, requests
 
-keys = requests.post("https://chain.techops.live/eth-mainnet", json={
+keys = requests.post("https://chain.techops.services/eth-mainnet", json={
     "jsonrpc": "2.0",
     "method": "eth_call",
     "params": [{
@@ -13,7 +13,7 @@ keys = requests.post("https://chain.techops.live/eth-mainnet", json={
 }).json()["result"][130:]
 result = {}
 for i in range(0, len(keys), 64):
-    address = "0x" + requests.post("https://chain.techops.live/eth-mainnet", json={
+    address = "0x" + requests.post("https://chain.techops.services/eth-mainnet", json={
         "jsonrpc": "2.0",
         "method": "eth_call",
         "params": [{
