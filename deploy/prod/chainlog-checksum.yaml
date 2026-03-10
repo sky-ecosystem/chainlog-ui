@@ -1,0 +1,33 @@
+replicaCount: 1
+service:
+  enabled: true
+  name: chainlog-checksum
+  port: 8080
+  type: ClusterIP
+  containerPort: 8080
+deployment:
+  enabled: true
+image:
+  repository: ${ECR_REGISTRY}/chainlog-checksum-prod
+  pullPolicy: Always
+  tag: prod
+serviceAccount:
+  create: false
+ingress:
+  enabled: false
+podAnnotations:
+  reloader.stakater.com/auto: "true"
+resources:
+  limits:
+    memory: 128Mi
+  requests:
+    cpu: 0.01
+    memory: 32Mi
+autoscaling:
+  enabled: false
+readinessProbe:
+  tcpSocket:
+    port: 8080
+livenessProbe:
+  tcpSocket:
+    port: 8080

@@ -18,7 +18,7 @@ serviceAccount:
   create: false
 ingress:
   enabled: true
-  host: chainlog.skyeco.com
+  host: chainlog-tmp-test.skyeco.com
   annotations:
     external-dns.alpha.kubernetes.io/cloudflare-proxied: "true"
 podAnnotations:
@@ -38,7 +38,7 @@ autoscaling:
 env:
   CHECKSUM_CONTAINER_NAME:
     type: kv
-    value: "localhost"
+    value: "chainlog-checksum"
 readinessProbe:
   tcpSocket:
     port: 8080
