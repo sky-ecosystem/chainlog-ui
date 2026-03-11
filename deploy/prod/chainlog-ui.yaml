@@ -38,7 +38,7 @@ autoscaling:
 env:
   CHECKSUM_CONTAINER_NAME:
     type: kv
-    value: "chainlog-checksum"
+    value: "chainlog-checksum-common"
 readinessProbe:
   tcpSocket:
     port: 8080
