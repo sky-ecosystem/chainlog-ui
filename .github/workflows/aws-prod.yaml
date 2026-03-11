@@ -82,8 +82,23 @@ jobs:
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
       run: |
+        sed -i 's/${ECR_REGISTRY}/'$(echo $ECR_REGISTRY)/ deploy/prod/chainlog-checksum.yaml
         sed -i 's/${ECR_REGISTRY}/'$(echo $ECR_REGISTRY)/ deploy/prod/chainlog-logger.yaml
         sed -i 's/${ECR_REGISTRY}/'$(echo $ECR_REGISTRY)/ deploy/prod/chainlog-ui.yaml
+
+    - name: Deploying Chainlog Checksum to Kubernetes with Helm
+      uses: bitovi/github-actions-deploy-eks-helm@v1.2.4
+      with:
+        values: image.repository=${{ steps.login-ecr.outputs.registry }}/chainlog-checksum-prod,image.tag=${{ steps.vars.outputs.sha_short }}
+        cluster-name: ${{ env.CLUSTER_NAME }}
+        config-files: deploy/prod/chainlog-checksum.yaml
+        chart-path: techops-services/common
+        namespace: chainlog
+        timeout: 5m0s
+        name: chainlog-checksum
+        chart-repository: https://techops-services.github.io/helm-charts
+        version: 0.0.19
+        atomic: true
 
     - name: Deploying Chainlog UI to Kubernetes with Helm
       uses: bitovi/github-actions-deploy-eks-helm@v1.2.4
