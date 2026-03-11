@@ -5,6 +5,8 @@ service:
   port: 8080
   type: ClusterIP
   containerPort: 8080
+  tls:
+    enabled: false
 deployment:
   enabled: true
 image:
