@@ -6,7 +6,7 @@ import json
 import time
 from datetime import datetime
 from eth_utils import to_checksum_address
-from github import Github, GithubException
+from github import Github, GithubException, Auth
 
 def call(chain, calldata):
     if chain == "mainnet":
@@ -105,7 +105,7 @@ def update(chain):
     else:
         print("{} - no changes on {}".format(datetime.now(), chain))
 
-g = Github(os.environ["GITHUB_TOKEN"])
+g = Github(auth=Auth.Token(os.environ["GITHUB_TOKEN"]))
 repo = g.get_repo(os.environ["CHAINLOG_REPO"])
 chains = ["mainnet"]
 while True:
