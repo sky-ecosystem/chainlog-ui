@@ -2,7 +2,9 @@
 
 import os, requests
 
-keys = requests.post("https://chain.techops.services/eth-mainnet", json={
+endpoint = os.environ["ETH_MAINNET_RPC_URL"]
+
+keys = requests.post(endpoint, json={
     "jsonrpc": "2.0",
     "method": "eth_call",
     "params": [{
@@ -13,7 +15,7 @@ keys = requests.post("https://chain.techops.services/eth-mainnet", json={
 }).json()["result"][130:]
 result = {}
 for i in range(0, len(keys), 64):
-    address = "0x" + requests.post("https://chain.techops.services/eth-mainnet", json={
+    address = "0x" + requests.post(endpoint, json={
         "jsonrpc": "2.0",
         "method": "eth_call",
         "params": [{

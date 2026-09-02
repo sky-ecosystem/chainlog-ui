@@ -10,9 +10,9 @@ from github import Github, GithubException
 
 def call(chain, calldata):
     if chain == "mainnet":
-        endpoint = "https://chain.techops.services/eth-mainnet"
+        endpoint = os.environ["ETH_MAINNET_RPC_URL"]
     else:
-        endpoint = "https://chain.techops.services/eth-sepolia"
+        endpoint = os.environ["ETH_SEPOLIA_RPC_URL"]
     response = requests.post(endpoint, json={
         "jsonrpc": "2.0",
         "method": "eth_call",

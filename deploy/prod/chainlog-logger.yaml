@@ -25,6 +25,12 @@ env:
   CHAINLOG_REPO:
     type: kv
     value: "sky-ecosystem/chainlog-ui"
+  ETH_MAINNET_RPC_URL:
+    type: kv
+    value: "${ETH_MAINNET_RPC_URL}"
+  ETH_SEPOLIA_RPC_URL:
+    type: kv
+    value: "${ETH_SEPOLIA_RPC_URL}"
   PYTHONUNBUFFERED:
     type: kv
     value: "1"

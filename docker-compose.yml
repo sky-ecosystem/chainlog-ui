@@ -20,6 +20,8 @@ services:
     environment:
       GITHUB_TOKEN: $GITHUB_TOKEN
       CHAINLOG_REPO: "sky-ecosystem/chainlog-ui"
+      ETH_MAINNET_RPC_URL: $ETH_MAINNET_RPC_URL
+      ETH_SEPOLIA_RPC_URL: $ETH_SEPOLIA_RPC_URL
       PYTHONUNBUFFERED: 1
     volumes:
       - ./api:/usr/app/src/api
