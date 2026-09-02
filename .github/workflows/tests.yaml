@@ -10,6 +10,7 @@ jobs:
   deploy:
     name: Run Tests
     runs-on: ubuntu-latest
+    environment: staging
 
     steps:
       - name: Checkout
