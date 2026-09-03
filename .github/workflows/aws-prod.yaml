@@ -20,10 +20,10 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v4
+      uses: actions/checkout@v7
 
     - name: Configure AWS credentials
-      uses: aws-actions/configure-aws-credentials@v4
+      uses: aws-actions/configure-aws-credentials@v6
       with:
         role-to-assume: ${{ secrets.GA_OIDC_EKS_PROD }}
         role-session-name: chainlog-prod
@@ -31,7 +31,7 @@ jobs:
 
     - name: Login to Amazon ECR
       id: login-ecr
-      uses: aws-actions/amazon-ecr-login@v1
+      uses: aws-actions/amazon-ecr-login@v2
 
     - name: Extract commit hash
       id: vars
@@ -81,13 +81,17 @@ jobs:
       id: preparing-helm-values
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+        ETH_MAINNET_RPC_URL: ${{ secrets.ETH_MAINNET_RPC_URL }}
+        ETH_SEPOLIA_RPC_URL: ${{ secrets.ETH_SEPOLIA_RPC_URL }}
       run: |
         sed -i 's/${ECR_REGISTRY}/'$(echo $ECR_REGISTRY)/ deploy/prod/chainlog-checksum.yaml
         sed -i 's/${ECR_REGISTRY}/'$(echo $ECR_REGISTRY)/ deploy/prod/chainlog-logger.yaml
         sed -i 's/${ECR_REGISTRY}/'$(echo $ECR_REGISTRY)/ deploy/prod/chainlog-ui.yaml
+        sed -i 's#${ETH_MAINNET_RPC_URL}#'"$ETH_MAINNET_RPC_URL"'#' deploy/prod/chainlog-logger.yaml
+        sed -i 's#${ETH_SEPOLIA_RPC_URL}#'"$ETH_SEPOLIA_RPC_URL"'#' deploy/prod/chainlog-logger.yaml
 
     - name: Deploying Chainlog Checksum to Kubernetes with Helm
-      uses: bitovi/github-actions-deploy-eks-helm@v1.2.4
+      uses: bitovi/github-actions-deploy-eks-helm@v1.2.12
       with:
         values: image.repository=${{ steps.login-ecr.outputs.registry }}/chainlog-checksum-prod,image.tag=${{ steps.vars.outputs.sha_short }}
         cluster-name: ${{ env.CLUSTER_NAME }}
@@ -101,7 +105,7 @@ jobs:
         atomic: true
 
     - name: Deploying Chainlog UI to Kubernetes with Helm
-      uses: bitovi/github-actions-deploy-eks-helm@v1.2.4
+      uses: bitovi/github-actions-deploy-eks-helm@v1.2.12
       with:
         values: image.repository=${{ steps.login-ecr.outputs.registry }}/chainlog-ui-prod,image.tag=${{ steps.vars.outputs.sha_short }}
         cluster-name: ${{ env.CLUSTER_NAME }}
@@ -115,7 +119,7 @@ jobs:
         atomic: true
 
     - name: Deploying Chainlog Logger to Kubernetes with Helm
-      uses: bitovi/github-actions-deploy-eks-helm@v1.2.4
+      uses: bitovi/github-actions-deploy-eks-helm@v1.2.12
       with:
         values: image.repository=${{ steps.login-ecr.outputs.registry }}/chainlog-logger-prod,image.tag=${{ steps.vars.outputs.sha_short }}
         cluster-name: ${{ env.CLUSTER_NAME }}

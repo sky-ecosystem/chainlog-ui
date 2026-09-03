@@ -10,20 +10,23 @@ jobs:
   deploy:
     name: Run Tests
     runs-on: ubuntu-latest
+    environment: staging
 
     steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v7
 
-    - name: Start and test chainlog containers
-      id: start-containers
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      working-directory: ./
-      run: |
-        docker compose up -d
-        sleep 10
-        docker ps | grep chainlog-ui
-        docker ps | grep chainlog-logger || (docker logs chainlog-logger && exit 1)
-        curl -I localhost:8080
-        docker logs chainlog-logger
+      - name: Start and test chainlog containers
+        id: start-containers
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          ETH_MAINNET_RPC_URL: ${{ secrets.ETH_MAINNET_RPC_URL }}
+          ETH_SEPOLIA_RPC_URL: ${{ secrets.ETH_SEPOLIA_RPC_URL }}
+        working-directory: ./
+        run: |
+          docker compose up -d
+          sleep 10
+          docker ps | grep chainlog-ui
+          docker ps | grep chainlog-logger || (docker logs chainlog-logger && exit 1)
+          curl -I localhost:8080
+          docker logs chainlog-logger
